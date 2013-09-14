@@ -1,7 +1,9 @@
---------------
--- Liam Cain
+----------------------
+-- Queries 1 Homework
+--
+-- William Cain
 -- 9/13/13
---------------
+----------------------
 
 -- Question 1 --
 SELECT * FROM customers;
