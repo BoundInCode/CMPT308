@@ -9,10 +9,11 @@
 SELECT city
 FROM agents a, orders o
 WHERE a.aid = o.aid
-  AND cid = 'c002';
+AND cid = 'c002';
 
 -- Question 2 --
-SELECT o.pid FROM orders o
+SELECT o.pid
+FROM orders o
 WHERE o.aid IN
 	(SELECT distinct o.aid
 	FROM orders o, customers c
@@ -28,9 +29,11 @@ WHERE NOT EXISTS
 	 WHERE c.cid = o.cid
 	 AND o.aid = 'a03')
 
-SELECT cid FROM customers
+SELECT cid
+FROM customers
 WHERE cid NOT IN
-	(SELECT o.cid FROM orders o
+	(SELECT o.cid
+	FROM orders o
 	WHERE o.aid = 'a03')
 
 -- Question 4 --
@@ -56,9 +59,9 @@ WHERE o.cid IN
 SELECT distinct c.name, c.discount
 FROM customers c, orders o, agents a
 WHERE c.cid = o.cid
-  AND o.aid = a.aid
-  AND (a.city = 'Dallas'
-   OR a.city = 'Duluth')
+AND o.aid = a.aid
+AND (a.city = 'Dallas'
+OR a.city = 'Duluth')
 
 -- Question 7 --
 SELECT name
