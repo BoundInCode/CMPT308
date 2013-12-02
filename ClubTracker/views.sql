@@ -1,9 +1,19 @@
+
 SELECT first_name, last_name, role_name
 FROM students s, clubs c, students_clubs sc, club_roles cr, semesters sem
 WHERE club_name = 'Computer Society'
 AND s.student_cwid = sc.student_cwid
 AND c.club_id = sc.club_id
 AND cr.role_id = sc.role_id
+AND sc.semester_id = sem.semester_id
+AND NOW() > sem.start_date
+AND NOW() < sem.end_date;
+
+DROP VIEW IF EXISTS ClubsThisSemester;
+CREATE VIEW ClubsThisSemester AS
+SELECT distinct club_name
+FROM clubs c, students_clubs sc, semesters sem
+WHERE c.club_id = sc.club_id
 AND sc.semester_id = sem.semester_id
 AND NOW() > sem.start_date
 AND NOW() < sem.end_date;
@@ -99,6 +109,24 @@ RETURNS BOOLEAN as $$
 $$ language 'sql';
 SELECT * FROM onePriorityPoints(1, 3, '20036153');
 
+
+CREATE FUNCTION date_order() RETURNS trigger AS $date_order$
+	BEGIN
+		IF NEW.start_date > NEW.end_date THEN
+			RAISE EXCEPTION 'end_date % should come after start_date %.', NEW.start_date, NEW.end_date;
+		END IF;
+		RETURN NEW;
+	END;
+$date_order$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER check_semester_dates 
+	BEFORE INSERT or UPDATE
+	ON semesters
+	FOR EACH ROW EXECUTE PROCEDURE date_order();
+
+INSERT INTO semesters (end_date, start_date)
+VALUES ('2014-01-21 00:00:00 EST', '2014-05-22 23:59:59 EST');
 
 
 SELECT COUNT(student_cwid) AS event_attendances
